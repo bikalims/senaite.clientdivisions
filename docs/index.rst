@@ -1,0 +1,5 @@
+=======================
+senaite.clientdivisions
+=======================
+
+User documentation
