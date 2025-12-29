@@ -17,5 +17,7 @@
       type="plone"
       directory="static"
       />
+  <include file="divisionsfolder.zcml"/>
+  <include package=".division"/>
 
 </configure>

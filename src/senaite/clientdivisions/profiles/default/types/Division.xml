@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    name="Division"
+    meta_type="Dexterity FTI"
+    i18n:domain="senaite.clientdivisions">
+
+  <!-- Basic properties -->
+  <property
+      i18n:translate=""
+      name="title">Division</property>
+  <property
+      i18n:translate=""
+      name="description">Division</property>
+
+  <property name="allow_discussion">False</property>
+  <property name="factory">Division</property>
+  <property name="icon_expr"></property>
+  <property name="link_target"></property>
+
+  <!-- Hierarchy control -->
+  <property name="global_allow">False</property>
+  <property name="filter_content_types">True</property>
+  <property name="allowed_content_types">
+    <element value="AnalysisRequest"/>
+    <element value="AnalysisSpec"/>
+    <element value="Attachment"/>
+    <element value="Batch"/>
+    <element value="Contact"/>
+    <element value="Sample"/>
+    <element value="Folder"/>
+    <element value="Invoice"/>
+    <!-- DX based contents -->
+    <element value="SamplePoint"/>
+    <element value="SampleTemplate"/>
+    <element value="AnalysisProfile"/>
+    <!-- Use SimpleFile/SimpleImage types for attachments -->
+    <element value="SimpleFile"/>
+    <element value="SimpleImage"/>
+  </property>
+
+  <!-- Schema, class and security -->
+  <property name="add_permission">cmf.AddPortalContent</property>
+  <property name="model_file"></property>
+  <property name="model_source"></property>
+  <property name="schema">senaite.clientdivisions.content.division.IDivisionSchema</property>
+  <property name="klass">senaite.clientdivisions.content.division.Division</property>
+
+
+  <!-- Enabled behaviors -->
+  <property name="behaviors" purge="false">
+    <element value="bika.lims.interfaces.IAutoGenerateID"/>
+    <element value="bika.lims.interfaces.IMultiCatalogBehavior"/>
+    <element value="plone.app.referenceablebehavior.referenceable.IReferenceable"/>
+  </property>
+
+  <!-- View information -->
+  <property name="add_view_expr">string:${folder_url}/++add++Division</property>
+  <property name="default_view">view</property>
+  <property name="default_view_fallback">False</property>
+  <property name="immediate_view">view</property>
+  <property name="view_methods">
+    <element value="view"/>
+  </property>
+
+  <!-- Method aliases -->
+  <alias from="(Default)" to="base_view"/>
+  <alias from="analysisrequests" to="base_view"/>
+  <alias from="edit" to="@@edit" />
+  <alias from="view" to="(selected layout)" />
+  <alias from="sharing" to="@@sharing" />
+
+  <action title="Edit"
+          action_id="edit"
+          category="object"
+          url_expr="string:${object_url}/edit"
+          i18n:attributes="title"
+          i18n:domain="senaite.core"
+          visible="True">
+    <permission value="Modify portal content"/>
+  </action>
+
+  <!-- Manage Client Access / Sharing -->
+  <action title="Manage Access"
+          action_id="manage_access"
+          category="object"
+          url_expr="string:${object_url}/@@sharing"
+          i18n:attributes="title"
+          i18n:domain="senaite.core"
+          visible="True">
+    <!--Use Manage permission to hide action from logged in client contacts -->
+    <!-- <permission value="Sharing page: Delegate roles"/> -->
+    <permission value="senaite.core: Manage Bika"/>
+  </action>
+
+  <action title="Contacts"
+          action_id="contacts"
+          category="object"
+          icon_expr="string:${portal_url}/images/client_contact.png"
+          url_expr="string:${object_url}/contacts"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Samples"
+          action_id="view"
+          category="object"
+          condition_expr=""
+          icon_expr="string:${portal_url}/images/sample.png"
+          link_target=""
+          url_expr="string:${object_url}/analysisrequests"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Batches"
+          action_id="batches"
+          category="object"
+          condition_expr=""
+          icon_expr="string:${portal_url}/images/batch.png"
+          link_target=""
+          url_expr="string:${object_url}/batches"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Sample Points"
+          action_id="samplepoints"
+          category="object"
+          condition_expr=""
+          icon_expr="string:${portal_url}/images/samplepoint.png"
+          link_target=""
+          url_expr="string:${object_url}/samplepoints"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Analysis Profiles"
+          action_id="profiles"
+          category="object"
+          condition_expr=""
+          icon_expr="string:${portal_url}/images/analysisprofile.png"
+          link_target=""
+          url_expr="string:${object_url}/analysisprofiles"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Sample Templates"
+          action_id="templates"
+          category="object"
+          condition_expr=""
+          icon_expr=""
+          link_target=""
+          url_expr="string:${object_url}/@@sampletemplates"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Analysis Specifications"
+          action_id="specs"
+          category="object"
+          condition_expr=""
+          icon_expr="string:${portal_url}/images/analysisspec.png"
+          link_target=""
+          url_expr="string:${object_url}/analysisspecs"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Attachments"
+          action_id="attachments"
+          category="object"
+          condition_expr=""
+          icon_expr="string:${portal_url}/images/attachment.png"
+          link_target=""
+          url_expr="string:${object_url}/attachments"
+          i18n:attributes="title"
+          visible="True">
+    <permission value="View"/>
+  </action>
+
+  <action title="Analysis Reports"
+          action_id="reports_listing"
+          category="object"
+          icon_expr=""
+          url_expr="string:${object_url}/reports_listing"
+          visible="True"
+          i18n:domain="senaite.core"
+          i18n:attributes="title">
+    <permission value="senaite.core: Manage Analysis Requests"/>
+  </action>
+</object>

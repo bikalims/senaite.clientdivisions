@@ -19,7 +19,7 @@
 
   <genericsetup:registerProfile
       name="default"
-      title="SENAITE CLIENTDIVISIONS"
+      title="SENAITE CLIENT DIVISIONS"
       directory="profiles/default"
       description="Installs the senaite.clientdivisions add-on."
       provides="Products.GenericSetup.interfaces.EXTENSION"
