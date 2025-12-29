@@ -1,4 +1,4 @@
-name: build bika.concrete
+name: build senaite.clientdivisions
 on:
   - push
   - pull_request
@@ -28,7 +28,7 @@ jobs:
       - name: lint
         run: |
           bin/pip install flake8
-          bin/flake8 --config ci_flake8.cfg src/bika/
+          bin/flake8 --config ci_flake8.cfg src/senaite/
           #      - name: test
           #        run: |
           #          bin/test -s bika.concrete.tests
