@@ -24,6 +24,6 @@ from bika.lims.browser.batchfolder import BatchFolderContentsView
 class DivisionBatchesView(BatchFolderContentsView):
 
     def __init__(self, context, request):
-        super(ClientBatchesView, self).__init__(context, request)
+        super(DivisionBatchesView, self).__init__(context, request)
         self.view_url = self.context.absolute_url() + "/batches"
         self.contentFilter['getDivisionUID'] = self.context.UID()

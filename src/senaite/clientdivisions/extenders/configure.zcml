@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="senaite.clientdivisions">
+
+    <adapter name='senaite.clientdivisions.ar'
+             provides="archetypes.schemaextender.interfaces.ISchemaExtender"
+            factory=".analysisrequest.AnalysisRequestSchemaExtender"/>
+    <!--
+    <adapter name='senaite.clientdivisions.ar.schemamodifier'
+             provides="archetypes.schemaextender.interfaces.ISchemaModifier"
+             factory=".analysisrequest.AnalysisRequestSchemaModifier" />
+    -->
+
+</configure>

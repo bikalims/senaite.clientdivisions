@@ -27,6 +27,9 @@ class DivisionsView(BikaListingView):
             "sort_order": "ascending",
             "sort_on": "sortable_title"
         }
+        self.contentFilter["path"] = {
+            "query": api.get_path(context),
+            "level": 0}
 
         self.context_actions = {
             _("Add"): {

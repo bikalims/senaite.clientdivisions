@@ -14,7 +14,9 @@
   <!--<includeDependencies package="." />-->
 
   <include package=".browser" />
-
+  <include package=".catalog" />
+  <include package=".extenders" />
+  <include package=".monkeys" />
   <include file="permissions.zcml" />
 
   <genericsetup:registerProfile

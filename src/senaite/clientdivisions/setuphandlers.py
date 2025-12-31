@@ -1,10 +1,24 @@
 # -*- coding: utf-8 -*-
+
 from Products.CMFPlone.interfaces import INonInstallable
 from zope.interface import implementer
 
 from bika.lims import api
 from senaite.clientdivisions.config import PROFILE_ID
 from senaite.clientdivisions.config import logger
+from senaite.core.catalog import SETUP_CATALOG
+from senaite.core.catalog import SAMPLE_CATALOG
+from senaite.core.setuphandlers import setup_other_catalogs
+
+# Tuples of (catalog, index_name, index_attribute, index_type)
+INDEXES = [
+    (SETUP_CATALOG, "getDivision", "", "FieldIndex"),
+    (SAMPLE_CATALOG, "getDivisionUID", "", "FieldIndex"),
+]
+
+# Tuples of (catalog, column_name)
+COLUMNS = [
+]
 
 
 ID_FORMATTING = [
@@ -38,11 +52,17 @@ def post_install(context):
     portal = context.getSite()
     setup_id_formatting(portal)
     add_division_to_client(portal)
+    setup_catalogs(portal)
 
 
 def uninstall(context):
     """Uninstall script"""
     # Do something at the end of the uninstallation of this package.
+
+
+def setup_catalogs(portal):
+    """Setup patient catalogs"""
+    setup_other_catalogs(portal, indexes=INDEXES, columns=COLUMNS)
 
 
 def setup_id_formatting(portal, format_definition=None):
