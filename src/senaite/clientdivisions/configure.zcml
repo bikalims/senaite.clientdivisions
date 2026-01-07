@@ -15,6 +15,7 @@
   -->
   <!--<includeDependencies package="." />-->
 
+  <include package=".adapters" />
   <include package=".browser" />
   <include package=".catalog" />
   <include package=".extenders" />

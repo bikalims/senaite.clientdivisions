@@ -1,0 +1,18 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:monkey="http://namespaces.plone.org/monkey"
+    i18n_domain="senaite.clientdivisions">
+
+    <!-- Hides the client field in AR Add form when the creation takes place
+    inside a Client context. Makes the field readonly in mode=edit -->
+    <adapter
+      factory=".widgetvisibility.DivisionFieldVisibility"
+      provides="bika.lims.interfaces.IATWidgetVisibility"
+      for="bika.lims.interfaces.IAnalysisRequest"
+      name="DivisionFieldVisibility"
+    />
+
+
+</configure>
