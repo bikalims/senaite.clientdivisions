@@ -6,6 +6,7 @@
   <configure zcml:condition="installed AccessControl.security">
   <!-- -*- extra stuff goes here -*- -->
 
+  <permission id="senaite.clientdivisions.permissions.AddDivision" title="senaite.clientdivisions: Add Division"/>
 
   </configure>
 

@@ -1,23 +1,18 @@
 <?xml version="1.0"?>
-<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-    name="Division"
-    meta_type="Dexterity FTI"
-    i18n:domain="senaite.clientdivisions">
+<object name="Division"
+        meta_type="Factory-based Type Information with dynamic views"
+        xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        i18n:domain="senaite.clientdivisions"
+        purge="True">
 
-  <!-- Basic properties -->
-  <property
-      i18n:translate=""
-      name="title">Division</property>
-  <property
-      i18n:translate=""
-      name="description">Division</property>
-
-  <property name="allow_discussion">False</property>
-  <property name="factory">Division</property>
-  <property name="icon_expr"></property>
+  <property name="title" i18n:translate="">Division</property>
+  <property name="description"></property>
+  <property name="content_icon">senaite_theme/icon/client</property>
+  <property name="content_meta_type">Division</property>
+  <property name="product">senaite.clientdivisions</property>
+  <property name="factory">addDivision</property>
+  <property name="add_view_expr">string:${object/absolute_url}/base_edit</property>
   <property name="link_target"></property>
-
-  <!-- Hierarchy control -->
   <property name="global_allow">False</property>
   <property name="filter_content_types">True</property>
   <property name="allowed_content_types">
@@ -37,36 +32,14 @@
     <element value="SimpleFile"/>
     <element value="SimpleImage"/>
   </property>
-
-  <!-- Schema, class and security -->
-  <property name="add_permission">cmf.AddPortalContent</property>
-  <property name="model_file"></property>
-  <property name="model_source"></property>
-  <property name="schema">senaite.clientdivisions.content.division.IDivisionSchema</property>
-  <property name="klass">senaite.clientdivisions.content.division.Division</property>
-
-
-  <!-- Enabled behaviors -->
-  <property name="behaviors" purge="false">
-    <element value="bika.lims.interfaces.IAutoGenerateID"/>
-    <element value="bika.lims.interfaces.IMultiCatalogBehavior"/>
-    <element value="plone.app.referenceablebehavior.referenceable.IReferenceable"/>
-  </property>
-
-  <!-- View information -->
-  <property name="add_view_expr">string:${folder_url}/++add++Division</property>
-  <property name="default_view">view</property>
+  <property name="allow_discussion">False</property>
+  <property name="immediate_view">base_edit</property>
   <property name="default_view_fallback">False</property>
-  <property name="immediate_view">view</property>
-  <property name="view_methods">
-    <element value="view"/>
-  </property>
 
-  <!-- Method aliases -->
   <alias from="(Default)" to="base_view"/>
   <alias from="analysisrequests" to="base_view"/>
-  <alias from="edit" to="@@edit" />
-  <alias from="view" to="(selected layout)" />
+  <alias from="edit" to="base_edit"/>
+  <alias from="view" to="base_view"/>
   <alias from="sharing" to="@@sharing" />
 
   <action title="Edit"
@@ -74,7 +47,7 @@
           category="object"
           url_expr="string:${object_url}/edit"
           i18n:attributes="title"
-          i18n:domain="senaite.core"
+          i18n:domain="senaite.clientdivisions"
           visible="True">
     <permission value="Modify portal content"/>
   </action>
@@ -85,7 +58,7 @@
           category="object"
           url_expr="string:${object_url}/@@sharing"
           i18n:attributes="title"
-          i18n:domain="senaite.core"
+          i18n:domain="senaite.clientdivisions"
           visible="True">
     <!--Use Manage permission to hide action from logged in client contacts -->
     <!-- <permission value="Sharing page: Delegate roles"/> -->
@@ -192,8 +165,9 @@
           icon_expr=""
           url_expr="string:${object_url}/reports_listing"
           visible="True"
-          i18n:domain="senaite.core"
+          i18n:domain="senaite.clientdivisions"
           i18n:attributes="title">
     <permission value="senaite.core: Manage Analysis Requests"/>
   </action>
+
 </object>

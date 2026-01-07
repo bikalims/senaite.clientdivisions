@@ -6,18 +6,23 @@ from zope.interface import implementer
 from bika.lims import api
 from senaite.clientdivisions.config import PROFILE_ID
 from senaite.clientdivisions.config import logger
-from senaite.core.catalog import SETUP_CATALOG
+from senaite.core.catalog import CLIENT_CATALOG
 from senaite.core.catalog import SAMPLE_CATALOG
+from senaite.core.setuphandlers import setup_catalog_mappings
 from senaite.core.setuphandlers import setup_other_catalogs
 
 # Tuples of (catalog, index_name, index_attribute, index_type)
 INDEXES = [
-    (SETUP_CATALOG, "getDivision", "", "FieldIndex"),
     (SAMPLE_CATALOG, "getDivisionUID", "", "FieldIndex"),
+]
+
+CATALOG_MAPPINGS = [
+    ("Division", [CLIENT_CATALOG]),
 ]
 
 # Tuples of (catalog, column_name)
 COLUMNS = [
+    (SAMPLE_CATALOG, "getDivisionUID"),
 ]
 
 
@@ -50,6 +55,7 @@ def post_install(context):
     profile_id = PROFILE_ID
     context = context._getImportContext(profile_id)
     portal = context.getSite()
+    # _run_import_step(portal, "typeinfo", "profile-senaite.clientdivisions:default")
     setup_id_formatting(portal)
     add_division_to_client(portal)
     setup_catalogs(portal)
@@ -63,6 +69,7 @@ def uninstall(context):
 def setup_catalogs(portal):
     """Setup patient catalogs"""
     setup_other_catalogs(portal, indexes=INDEXES, columns=COLUMNS)
+    setup_catalog_mappings(portal, catalog_mappings=CATALOG_MAPPINGS)
 
 
 def setup_id_formatting(portal, format_definition=None):

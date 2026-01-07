@@ -3,8 +3,10 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:five="http://namespaces.zope.org/five"
     i18n_domain="senaite.clientdivisions">
 
+  <five:registerPackage package="." initialize=".initialize" />
   <i18n:registerTranslations directory="locales" />
 
   <!--

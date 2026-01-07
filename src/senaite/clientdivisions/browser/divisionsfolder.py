@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import collections
+from Products.CMFCore.permissions import View
 
 from bika.lims import api
 from bika.lims import bikaMessageFactory as _
 from bika.lims.browser.bika_listing import BikaListingView
+from bika.lims.utils import check_permission
 from bika.lims.utils import get_link
-from senaite.core.catalog import SETUP_CATALOG
-from senaite.core.permissions import AddDepartment
+from senaite.core.catalog import CLIENT_CATALOG
 
 
 class DivisionsView(BikaListingView):
@@ -17,11 +18,12 @@ class DivisionsView(BikaListingView):
     def __init__(self, context, request):
         super(DivisionsView, self).__init__(context, request)
 
-        self.catalog = SETUP_CATALOG
+        self.catalog = CLIENT_CATALOG
         self.show_select_row = False
         self.show_select_column = True
         self.pagesize = 25
 
+        import pdb; pdb.set_trace()
         self.contentFilter = {
             "portal_type": "Division",
             "sort_order": "ascending",
@@ -31,11 +33,16 @@ class DivisionsView(BikaListingView):
             "query": api.get_path(context),
             "level": 0}
 
-        self.context_actions = {
-            _("Add"): {
-                "url": "++add++Division",
-                "permission": AddDepartment,
-                "icon": "++resource++bika.lims.images/add.png"}
+        # self.context_actions = {
+        #     _("Add"): {
+        #         "url": "++add++Division",
+        #         "permission": AddDepartment,
+        #         "icon": "++resource++bika.lims.images/add.png"}
+        # }
+        self.context_actions[_("Add")] = {
+            "url": "createObject?type_name=Division",
+            "icon": "++resource++bika.lims.images/add.png",
+            "permission": View,
         }
 
         self.title = self.context.translate(_("Divisions"))

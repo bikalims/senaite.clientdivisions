@@ -1,53 +1,59 @@
-
 # -*- coding: utf-8 -*-
 
 from AccessControl import ClassSecurityInfo
-from senaite.clientdivisions.interfaces import IDivision
+from Products.Archetypes.public import Schema
+from Products.Archetypes.public import StringField
+from Products.Archetypes.public import StringWidget
+from Products.Archetypes.public import registerType
+from Products.ATContentTypes.content import schemata
+from zope.interface import implements
+
+from bika.lims.content.client import Client
 from bika.lims.interfaces import IDeactivable
-from plone.dexterity.content import Container
-from plone.supermodel import model
-from senaite.core.catalog import SETUP_CATALOG
-from bika.lims import api
-from zope.interface import implementer
-from zope import schema
+from senaite.clientdivisions.config import _
+from senaite.clientdivisions.config import PRODUCT_NAME
+from senaite.clientdivisions.interfaces import IDivision
+
+schema = Client.schema.copy() + Schema((
+    StringField(
+        "DivisionID",
+        required=1,
+        searchable=True,
+        validators=("uniquefieldvalidator", "standard_id_validator"),
+        widget=StringWidget(
+            label=_("Division ID"),
+            description=_(
+                "Short and unique identifier of this client. Besides fast "
+                "searches by client in Samples listings, the purposes of this "
+                "field depend on the laboratory needs. For instance, the "
+                "Division ID can be included as part of the Sample identifier, "
+                "so the lab can easily know the client a given sample belongs "
+                "to by just looking to its ID.")
+        ),
+    ),
+))
+
+schema["title"].widget.visible = False
+schema["description"].widget.visible = False
+schema["ClientID"].widget.visible = False
+schema["ClientID"].required = False
+schema["EmailAddress"].schemata = "default"
+
+schema.moveField("DivisionID", after="Name")
 
 
-class IDivisionSchema(model.Schema):
-    """Marker interface and Dexterity Python Schema for Division"""
-
-    title = schema.TextLine(
-        title=u"Title",
-        required=True,
-    )
-
-    description = schema.Text(
-        title=u"Description",
-        required=False,
-    )
-
-
-@implementer(IDivision, IDivisionSchema, IDeactivable)
-class Division(Container):
-    """Content-type class for IDivision"""
-
-    _catalogs = [SETUP_CATALOG]
+class Division(Client):
+    implements(IDivision, IDeactivable)
 
     security = ClassSecurityInfo()
+    schema = schema
+    # GROUP_KEY = "_client_division_group_id"
 
-    @security.private
-    def accessor(self, fieldname):
-        """Return the field accessor for the fieldname"""
-        schema = api.get_schema(self)
-        if fieldname not in schema:
-            return None
-        return schema[fieldname].get
+    def _renameAfterCreation(self, check_auto_id=False):
+        from senaite.core.idserver import renameAfterCreation
+        renameAfterCreation(self)
 
-    @security.private
-    def mutator(self, fieldname):
-        """Return the field mutator for the fieldname"""
-        schema = api.get_schema(self)
-        if fieldname not in schema:
-            return None
-        result = schema[fieldname].set
-        self.reindexObject()
-        return result
+
+schemata.finalizeATCTSchema(schema, folderish=True, moveDiscussion=False)
+
+registerType(Division, PRODUCT_NAME)

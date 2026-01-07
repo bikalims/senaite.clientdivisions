@@ -3,8 +3,8 @@
   <property name="title">Controls available content types in senaite</property>
 
   <!-- Divisions -->
-  <object name="Devisions" meta_type="Dexterity FTI" />
-  <object name="Division" meta_type="Dexterity FTI" />
+  <object name="Divisions" meta_type="Dexterity FTI" />
+  <object name="Division" meta_type="Factory-based Type Information with dynamic views"/>
 
 
 </object>
