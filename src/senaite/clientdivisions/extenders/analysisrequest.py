@@ -32,7 +32,7 @@ division_field = ExtUIDReferenceField(
             'add': 'edit',
             'secondary': 'disabled',
         },
-        catalog_name='senaite_catalog_setup',
+        catalog_name='senaite_catalog_client',
         base_query={"is_active": True,
                     "sort_on": "sortable_title",
                     "getClientUID": "",

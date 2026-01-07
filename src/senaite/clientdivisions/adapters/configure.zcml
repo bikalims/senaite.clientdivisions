@@ -5,13 +5,22 @@
     xmlns:monkey="http://namespaces.plone.org/monkey"
     i18n_domain="senaite.clientdivisions">
 
-    <!-- Hides the client field in AR Add form when the creation takes place
-    inside a Client context. Makes the field readonly in mode=edit -->
+    <!-- Hides the division field in AR Add form when the creation takes place
+    inside a Division context. Makes the field readonly in mode=edit -->
     <adapter
       factory=".widgetvisibility.DivisionFieldVisibility"
       provides="bika.lims.interfaces.IATWidgetVisibility"
       for="bika.lims.interfaces.IAnalysisRequest"
       name="DivisionFieldVisibility"
+    />
+
+    <!-- Returns default value for Division field on the sample,
+        name has to be <fieldName>_default_value_hook -->
+    <adapter
+      factory=".default_value_hook.DivisionDefaultValueHook"
+      provides="bika.lims.interfaces.IGetDefaultFieldValueARAddHook"
+      for="*"
+      name="Division_default_value_hook"
     />
 
 
