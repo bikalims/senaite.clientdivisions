@@ -23,7 +23,6 @@ class DivisionsView(BikaListingView):
         self.show_select_column = True
         self.pagesize = 25
 
-        import pdb; pdb.set_trace()
         self.contentFilter = {
             "portal_type": "Division",
             "sort_order": "ascending",
