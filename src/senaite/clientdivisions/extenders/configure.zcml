@@ -7,10 +7,9 @@
     <adapter name='senaite.clientdivisions.ar'
              provides="archetypes.schemaextender.interfaces.ISchemaExtender"
             factory=".analysisrequest.AnalysisRequestSchemaExtender"/>
-    <!--
+
     <adapter name='senaite.clientdivisions.ar.schemamodifier'
              provides="archetypes.schemaextender.interfaces.ISchemaModifier"
              factory=".analysisrequest.AnalysisRequestSchemaModifier" />
-    -->
 
 </configure>

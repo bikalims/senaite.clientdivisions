@@ -10,6 +10,8 @@ from zope.interface import implements
 
 from bika.lims.content.client import Client
 from bika.lims.interfaces import IDeactivable
+from bika.lims.content.clientawaremixin import ClientAwareMixin
+
 from senaite.clientdivisions.config import _
 from senaite.clientdivisions.config import PRODUCT_NAME
 from senaite.clientdivisions.interfaces import IDivision
@@ -42,12 +44,13 @@ schema["EmailAddress"].schemata = "default"
 schema.moveField("DivisionID", after="Name")
 
 
-class Division(Client):
+class Division(Client, ClientAwareMixin):
     implements(IDivision, IDeactivable)
 
     security = ClassSecurityInfo()
     schema = schema
-    # GROUP_KEY = "_client_division_group_id"
+    GROUP_KEY = "_division_group_id"
+    schema = schema
 
     def _renameAfterCreation(self, check_auto_id=False):
         from senaite.core.idserver import renameAfterCreation

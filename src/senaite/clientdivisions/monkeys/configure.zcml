@@ -3,31 +3,6 @@
     xmlns:monkey="http://namespaces.plone.org/monkey"
     i18n_domain="senaite.clientdivisions">
 
-  <!--
-  <monkey:patch
-    description="Include Location is_field_visible"
-    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
-    original="is_field_visible"
-    ignoreOriginal="True"
-    replacement=".analysisrequest.is_field_visible"
-    order="2012" />
-
-  <monkey:patch
-    description="Include Location get_client_info"
-    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
-    original="get_client_info"
-    ignoreOriginal="True"
-    replacement=".analysisrequest.get_client_info"
-    order="1012" />
-
-  <monkey:patch
-    description="Include division query in get_division_info"
-    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
-    original="get_division_info"
-    ignoreOriginal="True"
-    replacement=".analysisrequest.get_division_info"
-    order="1012" />
-
   <monkey:patch
     description="Include division query in get_client_queries"
     class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
@@ -35,38 +10,5 @@
     ignoreOriginal="True"
     replacement=".analysisrequest.get_client_queries"
     order="1012" />
-
-  <monkey:patch
-    description="Include division query in get_default_value"
-    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
-    original="get_default_value"
-    ignoreOriginal="True"
-    replacement=".analysisrequest.get_default_value"
-    order="1012" />
-
-  <monkey:patch
-    description="Include division query in get_division"
-    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
-    original="get_division"
-    ignoreOriginal="True"
-    replacement=".analysisrequest.get_division"
-    order="1012" />
-
-  <monkey:patch
-    description="Include division query in get_division"
-    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
-    original="get_default_division"
-    ignoreOriginal="True"
-    replacement=".analysisrequest.get_default_division"
-    order="1012" />
-
-  <monkey:patch
-    description="Get Flush Settings"
-    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
-    original="ajax_get_flush_settings"
-    ignoreOriginal="True"
-    replacement=".analysisrequest.ajax_get_flush_settings"
-    order="1012" />
-  -->
 
 </configure>
