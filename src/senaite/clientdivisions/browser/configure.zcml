@@ -19,5 +19,6 @@
       />
   <include file="divisionsfolder.zcml"/>
   <include package=".division"/>
+  <include package=".listingview"/>
 
 </configure>
