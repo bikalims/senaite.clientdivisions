@@ -19,19 +19,18 @@
 # Some rights reserved, see README and LICENSE.
 
 from bika.lims import api
-from bika.lims.browser.analysisrequest import AnalysisRequestsView
+from senaite.core.browser.samples.view import SamplesView
 
 
-class DivisionAnalysisRequestsView(AnalysisRequestsView):
+class DivisionSamplesView(SamplesView):
 
     def __init__(self, context, request):
-        super(DivisionAnalysisRequestsView, self).__init__(context, request)
+        super(DivisionSamplesView, self).__init__(context, request)
 
         self.contentFilter["getDivisionUID"] = context.UID()
-        self.remove_column("Client")
 
     def update(self):
-        super(DivisionAnalysisRequestsView, self).update()
+        super(DivisionSamplesView, self).update()
 
         # always redirect to the /analysisrequets view
         request_path = self.request.PATH_TRANSLATED

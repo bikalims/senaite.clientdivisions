@@ -1,0 +1,19 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+       xmlns:zcml="http://namespaces.zope.org/browser"
+       xmlns:fss="http://namespaces.zope.org/browser"
+       xmlns:plone="http://namespaces.plone.org/plone"
+       xmlns:browser="http://namespaces.zope.org/browser"
+       xmlns:five="http://namespaces.zope.org/five"
+       i18n_domain="senaite.clientdivisions">
+
+    <!-- Client AnalysisRequests View -->
+    <browser:page
+      for="bika.lims.interfaces.IClient"
+      name="base_view"
+      class=".client.ClientAnalysisRequestsView"
+      permission="zope2.View"
+      layer="bika.lims.interfaces.IBikaLIMS"
+    />
+
+
+</configure>

@@ -16,14 +16,12 @@
 
     <!-- Returns default value for Division field on the sample,
         name has to be <fieldName>_default_value_hook -->
-    <!--
     <adapter
       factory=".default_value_hook.DivisionDefaultValueHook"
       provides="bika.lims.interfaces.IGetDefaultFieldValueARAddHook"
       for="*"
       name="Division_default_value_hook"
     />
-    -->
 
 
 </configure>

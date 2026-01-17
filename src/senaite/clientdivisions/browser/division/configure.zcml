@@ -24,18 +24,20 @@
     <browser:page
       for="senaite.clientdivisions.interfaces.IDivision"
       name="base_view"
-      class="senaite.clientdivisions.browser.division.DivisionAnalysisRequestsView"
+      class="senaite.clientdivisions.browser.division.DivisionSamplesView"
       permission="zope2.View"
       layer="bika.lims.interfaces.IBikaLIMS"
     />
 
+    <!--
     <browser:page
       for="bika.lims.interfaces.IClient"
       name="divisions"
-      class="senaite.clientdivisions.browser.division.DivisionAnalysisRequestsView"
+      class="senaite.clientdivisions.browser.division.DivisionSamplesView"
       permission="zope2.View"
       layer="bika.lims.interfaces.IBikaLIMS"
     />
+    -->
 
     <browser:page
         for="senaite.clientdivisions.interfaces.IDivision"

@@ -9,6 +9,7 @@ from bika.lims.utils import get_link
 from senaite.app.listing.interfaces import IListingView
 from senaite.app.listing.interfaces import IListingViewAdapter
 from senaite.clientdivisions.config import _, is_installed
+from senaite.clientdivisions.interfaces import IDivision
 
 
 class SamplesListingViewAdapter(object):
@@ -31,22 +32,23 @@ class SamplesListingViewAdapter(object):
                     new[new_key] = value
             return new
 
-        division = [
-            (
-                "Division",
-                {
-                    "toggle": True,
-                    "sortable": True,
-                    "title": _("Division"),
-                },
-            )
-        ]
+        if not IDivision.providedBy(self.context):
+            division = [
+                (
+                    "Division",
+                    {
+                        "toggle": True,
+                        "sortable": True,
+                        "title": _("Division"),
+                    },
+                )
+            ]
 
-        self.listing.columns = insert_after(
-            self.listing.columns, "ClientID", "Division", division[0][1])
+            self.listing.columns = insert_after(
+                self.listing.columns, "ClientID", "Division", division[0][1])
 
-        for i in range(len(self.listing.review_states)):
-            self.listing.review_states[i]["columns"].append("Division")
+            for i in range(len(self.listing.review_states)):
+                self.listing.review_states[i]["columns"].append("Division")
 
     def folder_item(self, obj, item, index):
         if not is_installed():

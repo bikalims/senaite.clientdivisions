@@ -9,4 +9,4 @@ def division_uid(instance):
     division = instance.Division
     if division:
         return division
-    return None
+    return ""
