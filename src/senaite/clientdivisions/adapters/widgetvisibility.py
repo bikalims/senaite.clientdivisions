@@ -2,6 +2,7 @@
 
 
 from bika.lims.interfaces import IBatch
+from bika.lims.interfaces import IClient
 from senaite.clientdivisions.interfaces import IDivision
 from bika.lims.adapters.widgetvisibility import SenaiteATWidgetVisibility
 
@@ -22,6 +23,12 @@ class DivisionFieldVisibility(SenaiteATWidgetVisibility):
                 # Note we return "hidden" here instead of "invisible": we want
                 # the field to be auto-filled and processed on submit
                 return "hidden"
+
+            if IClient.providedBy(parent):
+                # Note we return "hidden" here instead of "invisible": we want
+                # the field to be auto-filled and processed on submit
+                return "hidden"
+
             if IBatch.providedBy(parent) and parent.getClient():
                 # The Batch has a Client assigned already!
                 # Note we can have Batches without a client assigned

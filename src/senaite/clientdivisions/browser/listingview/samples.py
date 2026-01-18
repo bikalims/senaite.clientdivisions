@@ -8,8 +8,8 @@ from bika.lims import api
 from bika.lims.utils import get_link
 from senaite.app.listing.interfaces import IListingView
 from senaite.app.listing.interfaces import IListingViewAdapter
+from senaite.core.interfaces import ISamples
 from senaite.clientdivisions.config import _, is_installed
-from senaite.clientdivisions.interfaces import IDivision
 
 
 class SamplesListingViewAdapter(object):
@@ -32,7 +32,7 @@ class SamplesListingViewAdapter(object):
                     new[new_key] = value
             return new
 
-        if not IDivision.providedBy(self.context):
+        if ISamples.providedBy(self.context):
             division = [
                 (
                     "Division",

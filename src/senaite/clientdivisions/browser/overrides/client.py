@@ -15,6 +15,7 @@ class ClientAnalysisRequestsView(AnalysisRequestsView):
         self.contentFilter["getDivisionUID"] = ""
 
         self.remove_column("Client")
+        self.remove_column("Division")
 
     def update(self):
         super(ClientAnalysisRequestsView, self).update()

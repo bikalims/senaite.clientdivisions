@@ -28,6 +28,8 @@ class DivisionSamplesView(SamplesView):
         super(DivisionSamplesView, self).__init__(context, request)
 
         self.contentFilter["getDivisionUID"] = context.UID()
+        self.remove_column("Client")
+        self.remove_column("Division")
 
     def update(self):
         super(DivisionSamplesView, self).update()
