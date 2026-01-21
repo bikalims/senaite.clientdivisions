@@ -1,24 +1,8 @@
 # -*- coding: utf-8 -*-
-#
-# This file is part of SENAITE.CORE.
-#
-# SENAITE.CORE is free software: you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation, version 2.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program; if not, write to the Free Software Foundation, Inc., 51
-# Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# Copyright 2018-2025 by it's authors.
-# Some rights reserved, see README and LICENSE.
 
+from Products.CMFCore.permissions import View
 from bika.lims.browser.batchfolder import BatchFolderContentsView
+from senaite.clientdivisions.config import _
 
 
 class DivisionBatchesView(BatchFolderContentsView):
@@ -27,3 +11,22 @@ class DivisionBatchesView(BatchFolderContentsView):
         super(DivisionBatchesView, self).__init__(context, request)
         self.view_url = self.context.absolute_url() + "/batches"
         self.contentFilter['getDivisionUID'] = self.context.UID()
+
+    def update(self):
+        """Before template render hook
+        """
+        super(BatchFolderContentsView, self).update()
+
+        if self.can_add():
+            # Add button. Note we set "View" as the permission, cause when no
+            # permission is set, system fallback to "Add portal content" for
+            # current context
+            add_ico = "{}{}".format(self.portal_url, "/senaite_theme/icon/plus")
+            url = self.context.absolute_url()
+            self.context_actions = {
+                _("Add"): {
+                    "url": "{}/createObject?type_name=Batch".format(url),
+                    "permission": View,
+                    "icon": add_ico
+                }
+            }

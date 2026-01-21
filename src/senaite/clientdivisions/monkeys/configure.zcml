@@ -11,4 +11,20 @@
     replacement=".analysisrequest.get_client_queries"
     order="1012" />
 
+  <monkey:patch
+    description="Sets Division on Batch"
+    class="bika.lims.content.batch.Batch"
+    original="getDivision"
+    ignoreOriginal="True"
+    replacement=".batch.getDivision"
+    order="1001" />
+
+  <monkey:patch
+    description="Sets Client on Batch"
+    class="bika.lims.content.batch.Batch"
+    original="getClient"
+    ignoreOriginal="True"
+    replacement=".batch.getClient"
+    order="1001" />
+
 </configure>

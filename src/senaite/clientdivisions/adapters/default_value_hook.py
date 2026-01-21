@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from zope.interface import implements
+from bika.lims import api
 from bika.lims.interfaces import IGetDefaultFieldValueARAddHook
 
 
@@ -17,6 +18,11 @@ class DivisionDefaultValueHook(object):
         """Returns the Division
         """
 
+        parent = api.get_parent(context)
         if context.portal_type == "Division":
             return context
+        elif parent.portal_type == "Division":
+            return parent
+        elif context.portal_type == "Batch" and parent.portal_type == "Division":
+            return parent
         return None

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
+from bika.lims.adapters.widgetvisibility import SenaiteATWidgetVisibility
 from bika.lims.interfaces import IBatch
 from bika.lims.interfaces import IClient
+from senaite.core.interfaces import ISamples
 from senaite.clientdivisions.interfaces import IDivision
-from bika.lims.adapters.widgetvisibility import SenaiteATWidgetVisibility
 
 
 class DivisionFieldVisibility(SenaiteATWidgetVisibility):
@@ -25,6 +25,16 @@ class DivisionFieldVisibility(SenaiteATWidgetVisibility):
                 return "hidden"
 
             if IClient.providedBy(parent):
+                # Note we return "hidden" here instead of "invisible": we want
+                # the field to be auto-filled and processed on submit
+                return "hidden"
+
+            if ISamples.providedBy(parent):
+                # Note we return "hidden" here instead of "invisible": we want
+                # the field to be auto-filled and processed on submit
+                return "hidden"
+
+            if IBatch.providedBy(parent):
                 # Note we return "hidden" here instead of "invisible": we want
                 # the field to be auto-filled and processed on submit
                 return "hidden"
