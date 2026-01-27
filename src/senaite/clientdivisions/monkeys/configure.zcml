@@ -12,6 +12,22 @@
     order="1012" />
 
   <monkey:patch
+    description="Include division query in get_client_queries"
+    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
+    original="get_default_contact"
+    ignoreOriginal="True"
+    replacement=".analysisrequest.get_default_contact"
+    order="1012" />
+
+  <monkey:patch
+    description="Include division query in get_client_queries"
+    class="bika.lims.browser.analysisrequest.add2.AnalysisRequestAddView"
+    original="get_default_contact"
+    ignoreOriginal="True"
+    replacement=".analysisrequest.get_default_contact"
+    order="1012" />
+
+  <monkey:patch
     description="Sets Division on Batch"
     class="bika.lims.content.batch.Batch"
     original="getDivision"
@@ -26,5 +42,13 @@
     ignoreOriginal="True"
     replacement=".batch.getClient"
     order="1001" />
+
+  <monkey:patch
+    description="Caters for Division as a parent on submit"
+    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
+    original="ajax_submit"
+    ignoreOriginal="True"
+    replacement=".analysisrequest.ajax_submit"
+    order="1212" />
 
 </configure>
