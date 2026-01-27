@@ -15,4 +15,11 @@
             provides="senaite.app.listing.interfaces.IListingViewAdapter"
             factory=".batchfolder.BatchesListingViewAdapter"/>
 
+    <!-- Cient Contacts -->
+    <subscriber
+            for="senaite.core.browser.clients.client.contacts.view.ClientContactsView
+                 zope.interface.Interface"
+            provides="senaite.app.listing.interfaces.IListingViewAdapter"
+            factory=".client_contacts.ClientContactsViewAdapter"/>
+
 </configure>
