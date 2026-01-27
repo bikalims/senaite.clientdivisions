@@ -36,6 +36,7 @@ class BatchesListingViewAdapter(object):
             return new
 
         if IBatchFolder.providedBy(self.context):
+            self.listing.context_actions = {}
             division = [
                 (
                     "Division",
