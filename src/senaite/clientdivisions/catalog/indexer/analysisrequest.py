@@ -8,5 +8,5 @@ from plone.indexer import indexer
 def division_uid(instance):
     division = instance.Division
     if division:
-        return division.UID()
+        return division
     return ""
