@@ -10,7 +10,7 @@ class DivisionBatchesView(BatchFolderContentsView):
     def __init__(self, context, request):
         super(DivisionBatchesView, self).__init__(context, request)
         self.view_url = self.context.absolute_url() + "/batches"
-        self.contentFilter['getDivisionUID'] = self.context.UID()
+        self.contentFilter['getBatchDivisionUID'] = self.context.UID()
 
     def update(self):
         """Before template render hook

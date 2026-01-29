@@ -23,5 +23,12 @@
       name="Division_default_value_hook"
     />
 
+    <!-- Batch: Hide Client field on division batch add -->
+    <adapter
+      factory=".widgetvisibility.BatchClientDivisionFieldVisibility"
+      provides="bika.lims.interfaces.IATWidgetVisibility"
+      for="bika.lims.interfaces.IBatch"
+      name="BatchClientDivisionFieldVisibility"
+    />
 
 </configure>

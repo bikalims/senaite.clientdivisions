@@ -8,12 +8,14 @@ from senaite.clientdivisions.config import PROFILE_ID
 from senaite.clientdivisions.config import logger
 from senaite.core.catalog import CLIENT_CATALOG
 from senaite.core.catalog import SAMPLE_CATALOG
+from senaite.core.catalog import SENAITE_CATALOG
 from senaite.core.setuphandlers import setup_catalog_mappings
 from senaite.core.setuphandlers import setup_other_catalogs
 
 # Tuples of (catalog, index_name, index_attribute, index_type)
 INDEXES = [
     (SAMPLE_CATALOG, "getDivisionUID", "", "FieldIndex"),
+    (SENAITE_CATALOG, "getBatchDivisionUID", "", "FieldIndex"),
 ]
 
 CATALOG_MAPPINGS = [
@@ -23,6 +25,7 @@ CATALOG_MAPPINGS = [
 # Tuples of (catalog, column_name)
 COLUMNS = [
     (SAMPLE_CATALOG, "getDivisionUID"),
+    (SENAITE_CATALOG, "getBatchDivisionUID"),
 ]
 
 

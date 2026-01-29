@@ -15,6 +15,8 @@ def getClient(self):
     client = self.aq_parent
     if client.portal_type == "Client":
         return client
+    if client.aq_parent.portal_type == "Client":
+        return client.aq_parent
     return None
 
 

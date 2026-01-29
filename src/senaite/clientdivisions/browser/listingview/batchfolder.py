@@ -54,11 +54,17 @@ class BatchesListingViewAdapter(object):
             for i in range(len(self.listing.review_states)):
                 self.listing.review_states[i]["columns"].append("Division")
 
-    def folder_item(self, obj, item, index):
+        if self.context.portal_type == "Client":
+            self.listing.contentFilter['getBatchDivisionUID'] = ""
+            self.listing.contentFilter['getClientUID'] = self.context.UID()
+
+    def folder_item(self, brain, item, index):
         if not is_installed():
             return item
-        obj = api.get_object(obj)
-        division = obj.Schema()["Division"].getAccessor(obj)()
+        division_uid = brain.getBatchDivisionUID
+        if not division_uid:
+            return item
+        division = api.get_object_by_uid(division_uid)
         if division:
             division_title = division.Title()  # or DivisionID
             division_url = division.absolute_url()

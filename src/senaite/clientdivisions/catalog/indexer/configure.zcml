@@ -5,4 +5,7 @@
   <!-- AnalysisRequest Indexer -->
   <adapter name="getDivisionUID" factory=".analysisrequest.division_uid"/>
 
+  <!-- Batch Indexer -->
+  <adapter name="getBatchDivisionUID" factory=".batch.batch_division_uid"/>
+
 </configure>

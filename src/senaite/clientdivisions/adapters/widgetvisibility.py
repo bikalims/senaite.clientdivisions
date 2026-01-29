@@ -50,3 +50,29 @@ class DivisionFieldVisibility(SenaiteATWidgetVisibility):
             # folder to another!).
             return "invisible"
         return default
+
+
+class BatchClientDivisionFieldVisibility(SenaiteATWidgetVisibility):
+    """Client field in a Batch on the Division context in only editable
+    while it is being created or when the Batch does not contain any sample
+    """
+    def __init__(self, context):
+        super(BatchClientDivisionFieldVisibility, self).__init__(
+            context=context, sort=3, field_names=["Client"])
+
+    def isVisible(self, field, mode="view", default="visible"):
+        """Returns whether the field is visible in a given state
+        """
+        if self.context.aq_parent.getClient():
+            # This batch has a client assigned already and this cannot be
+            # changed to prevent inconsistencies (client contacts can access
+            # to batches that belong to their same client)
+            return "invisible"
+
+        if mode == "edit":
+            # This batch does not have a client assigned, but allow the client
+            # field to be editable only if does not contain any sample
+            if self.context.aq_parent.getAnalysisRequestsBrains():
+                return "invisible"
+
+        return default
