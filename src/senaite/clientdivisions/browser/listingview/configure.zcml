@@ -22,4 +22,11 @@
             provides="senaite.app.listing.interfaces.IListingViewAdapter"
             factory=".client_contacts.ClientContactsViewAdapter"/>
 
+    <!-- Cients -->
+    <subscriber
+            for="bika.lims.browser.clientfolder.ClientFolderContentsView
+                 zope.interface.Interface"
+            provides="senaite.app.listing.interfaces.IListingViewAdapter"
+            factory=".clientfolder.ClientsListingViewAdapter"/>
+
 </configure>
