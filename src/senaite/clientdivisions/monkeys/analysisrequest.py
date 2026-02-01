@@ -82,6 +82,7 @@ def get_default_contact(self, client=None):
     """
     from senaite.clientdivisions.interfaces import IDivision
     context = self.context
+    path = api.get_path(context)
     client = client or self.get_client()
     if client:
         path = api.get_path(client)
