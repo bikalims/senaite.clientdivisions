@@ -22,15 +22,14 @@ division_field = ExtUIDReferenceField(
     required=0,
     allowed_types=('Division',),
     relationship='AnalysisRequestDivision',
-    mode="rw",
+    mode="r",
     write_permission=FieldEditBatch,
     read_permission=View,
     widget=ReferenceWidget(
         label=_("Division"),
         render_own_label=True,
         visible={
-            'add': 'edit',
-            'secondary': 'disabled',
+            'view': 'visible',
         },
         catalog_name='senaite_catalog_client',
         base_query={"is_active": True,
