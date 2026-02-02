@@ -1,15 +1,59 @@
 # -*- coding: utf-8 -*-
 
+import transaction
+from Products.Archetypes.event import ObjectInitializedEvent
+from Products.CMFPlone.utils import _createObjectByType
 from Products.CMFPlone.utils import safe_unicode
 from collections import OrderedDict
+from zope import event
 from zope.component import getAdapters
+from zope.component import subscribers
+from zope.interface import alsoProvides
 
 from bika.lims import api
 from bika.lims.interfaces import IAddSampleRecordsValidator
+from bika.lims.interfaces import IAnalysisRequestSecondary
+from bika.lims.interfaces import IBatch
+from bika.lims.interfaces import IClient
+from bika.lims.interfaces import IReceived
+from bika.lims.utils import tmpID
+from bika.lims.utils import changeWorkflowState
+from bika.lims.utils.analysisrequest import apply_hidden_services
+from bika.lims.utils.analysisrequest import do_rejection
+from bika.lims.utils.analysisrequest import to_service_uids
+from bika.lims.utils.analysisrequest import receive_sample
+from bika.lims.utils.analysisrequest import resolve_rejection_reasons
+from senaite.core.api.workflow import check_guard
 from senaite.core.catalog import CONTACT_CATALOG
+from senaite.core.idserver import renameAfterCreation
+from senaite.core.interfaces import IAfterCreateSampleHook
+from senaite.core.permissions.sample import can_receive
+from senaite.core.registry import get_registry_record
+from senaite.core.workflow import SAMPLE_WORKFLOW
+from senaite.core.api.workflow import get_transition
+from senaite.clientdivisions.interfaces import IDivision
 
 from senaite.clientdivisions.config import _
 from senaite.clientdivisions.config import logger
+
+
+def getClient(self):
+    """Returns the client this object is bound to. We override getClient
+    from ClientAwareMixin because the "Client" schema field is only used to
+    allow the user to set the client while creating the Sample through
+    Sample Add form, but cannot be changed afterwards. The Sample is
+    created directly inside the selected client folder on submit
+    """
+    parent = self.aq_parent
+    if IDivision.providedBy(parent):
+        return parent.aq_parent
+    elif IClient.providedBy(parent) and parent.portal_type == "Client":
+        return parent
+    elif IBatch.providedBy(parent):
+        return parent.getClient()
+    # Fallback to UID reference field value
+    field = self.getField("Client")
+    return field.get(self)
 
 
 def get_client_queries(self, obj, record=None):
@@ -316,3 +360,210 @@ def ajax_submit(self):
     self.context.plone_utils.addPortalMessage(message, level)
 
     return self.handle_redirect(ARs.values(), message)
+
+
+def create_samples(self, records):
+    """Creates samples for the given records
+    """
+    samples = []
+    for record in records:
+        client_uid = record.get("Client")
+        client = self.get_object_by_uid(client_uid)
+        if not client:
+            raise ValueError("No client found")
+        division_uid = record.get("Division")
+        division = self.get_object_by_uid(division_uid)
+
+        # Pop the attachments
+        attachments = record.pop("attachments", [])
+
+        # Pop the source UID
+        source_uid = record.pop("_source_uid", None)
+
+        # Fetch the source object
+        source = None
+        if source_uid:
+            source = api.get_object(source_uid)
+
+        # Create as many samples as required
+        num_samples = self.get_num_samples(record)
+        for idx in range(num_samples):
+            sample = self.create_sample(
+                client, record, attachments=attachments, source=source,
+                division=division)
+            samples.append(sample)
+
+    return samples
+
+
+def create_sample(
+        self, client, record, attachments=None, source=None,
+        division=None):
+    """Creates a single sample with proper transaction handling
+
+    :param client: The client container where the sample will be created
+    :param record: Dict with sample data (field names to values)
+    :param attachments: List of attachment records to add to the sample
+    :param source: Source object for sample hooks (e.g., for copy/partition)
+    :return: The created sample object
+    """
+    # Create a savepoint before sample creation to allow proper rollback
+    # if sample creation fails (e.g., ID generation error)
+    sp = transaction.savepoint()
+    try:
+        # Create the sample
+        sample = create_analysisrequest(client, self.request,
+                                        record, division=division)
+
+        # Create the attachments
+        if attachments:
+            for attachment_record in attachments:
+                self.create_attachment(sample, attachment_record)
+
+        # Pass the new sample to all subscription hooks
+        hooks = subscribers((sample, self.request), IAfterCreateSampleHook)
+        # Lower sort keys are processed first
+        sorted_hooks = sorted(
+            hooks, key=lambda x: api.to_float(getattr(x, "sort", 10)))
+        for hook in sorted_hooks:
+            hook.update(sample, source=source)
+
+        # Commit the sample creation
+        transaction.savepoint(optimistic=True)
+        return sample
+    except Exception:
+        # Roll back to the savepoint before this sample creation
+        # This properly reverts all changes including catalog entries,
+        # workflow history, annotations, etc.
+        sp.rollback()
+        raise
+
+
+def create_analysisrequest(client, request, values, analyses=None,
+                           results_ranges=None, prices=None, division=None):
+    """Creates a new AnalysisRequest (a Sample) object
+    :param client: The container where the Sample will be created
+    :param request: The current Http Request object
+    :param values: A dict, with keys as AnalaysisRequest's schema field names
+    :param analyses: List of Services or Analyses (brains, objects, UIDs,
+        keywords). Extends the list from values["Analyses"]
+    :param results_ranges: List of Results Ranges. Extends the results ranges
+        from the Specification object defined in values["Specification"]
+    :param prices: Mapping of AnalysisService UID -> price. If not set, prices
+        are read from the associated analysis service.
+    """
+    # Don't pollute the dict param passed in
+    values = dict(values.items())
+
+    # Explicitly set client instead of relying on the passed in vales.
+    # This might happen if this function is called programmatically outside of
+    # the sample add form.
+    values["Client"] = client
+    if division:
+        values["Division"] = division
+
+    # Resolve the Service uids of analyses to be added in the Sample. Values
+    # passed-in might contain Profiles and also values that are not uids. Also,
+    # additional analyses can be passed-in through either values or services
+    service_uids = to_service_uids(services=analyses, values=values)
+
+    # Remove the Analyses from values. We will add them manually
+    values.update({"Analyses": []})
+
+    # Remove the specificaton to set it *after* the analyses have been added
+    specification = values.pop("Specification", None)
+
+    # Create the Analysis Request and submit the form
+    if division:
+        ar = _createObjectByType("AnalysisRequest", division, tmpID())
+    else:
+        ar = _createObjectByType("AnalysisRequest", client, tmpID())
+    # mark the sample as temporary to avoid indexing
+    api.mark_temporary(ar)
+    # NOTE: We call here `_processForm` (with underscore) to manually unmark
+    #       the creation flag and trigger the `ObjectInitializedEvent`, which
+    #       is used for snapshot creation.
+    ar._processForm(REQUEST=request, values=values)
+
+    # Set the analyses manually
+    ar.setAnalyses(service_uids, prices=prices, specs=results_ranges)
+
+    # Explicitly set the specification to the sample
+    if specification:
+        ar.setSpecification(specification)
+
+    # Handle hidden analyses from template and profiles
+    # https://github.com/senaite/senaite.core/issues/1437
+    # https://github.com/senaite/senaite.core/issues/1326
+    apply_hidden_services(ar)
+
+    # Handle rejection reasons
+    rejection_reasons = resolve_rejection_reasons(values)
+    ar.setRejectionReasons(rejection_reasons)
+
+    # Handle secondary Analysis Request
+    primary = ar.getPrimaryAnalysisRequest()
+    if primary:
+        # Mark the secondary with the `IAnalysisRequestSecondary` interface
+        alsoProvides(ar, IAnalysisRequestSecondary)
+
+        # Set dates to match with those from the primary
+        ar.setDateSampled(primary.getDateSampled())
+        ar.setSamplingDate(primary.getSamplingDate())
+
+        # Force the transition of the secondary to received and set the
+        # description/comment in the transition accordingly.
+        date_received = primary.getDateReceived()
+        if date_received:
+            receive_sample(ar, date_received=date_received)
+
+    parent_sample = ar.getParentAnalysisRequest()
+    if parent_sample:
+        # Always set partition to received
+        date_received = parent_sample.getDateReceived()
+        if date_received:
+            receive_sample(ar, date_received=date_received)
+
+    if not IReceived.providedBy(ar):
+        setup = api.get_senaite_setup()
+        auto_receive = setup.getAutoreceiveSamples()
+        if ar.getSamplingRequired():
+            # sample has not been collected yet
+            changeWorkflowState(ar, SAMPLE_WORKFLOW, "to_be_sampled",
+                                action="to_be_sampled")
+
+        elif auto_receive and can_receive(ar) and check_guard(ar, "receive"):
+            # auto-receive the sample, but only if the user (that might be
+            # a client) has enough privileges and the sample has a value set
+            # for DateSampled. Otherwise, sample_due
+            receive_sample(ar)
+
+        else:
+            # find out if is necessary to trigger events. It is always more
+            # performant if no events are triggered, but some instances might
+            # need them to work properly
+            key = "trigger_events_on_sample_creation"
+            trigger_events = get_registry_record(key)
+
+            # transition to the default initial status of the sample
+            action = "no_sampling_workflow"
+            tr = get_transition(SAMPLE_WORKFLOW, action)
+            changeWorkflowState(ar, SAMPLE_WORKFLOW, tr.new_state_id,
+                                trigger_events=trigger_events,
+                                action=action)
+
+    renameAfterCreation(ar)
+    # AT only
+    ar.unmarkCreationFlag()
+    # unmark the sample as temporary
+    api.unmark_temporary(ar)
+    # explicit reindexing after sample finalization
+    api.catalog_object(ar)
+    # notify object initialization (also creates a snapshot)
+    event.notify(ObjectInitializedEvent(ar))
+
+    # If rejection reasons have been set, reject the sample automatically
+    if rejection_reasons:
+        do_rejection(ar)
+
+    return ar

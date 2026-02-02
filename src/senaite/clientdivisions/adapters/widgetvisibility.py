@@ -24,7 +24,7 @@ class DivisionFieldVisibility(SenaiteATWidgetVisibility):
                 # the field to be auto-filled and processed on submit
                 return "hidden"
 
-            if IClient.providedBy(parent):
+            if IClient.providedBy(parent) and parent.portal_type == "Client":
                 # Note we return "hidden" here instead of "invisible": we want
                 # the field to be auto-filled and processed on submit
                 return "hidden"

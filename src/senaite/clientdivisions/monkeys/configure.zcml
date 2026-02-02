@@ -51,4 +51,28 @@
     replacement=".analysisrequest.ajax_submit"
     order="1212" />
 
+  <monkey:patch
+    description="Include division query in get_client_queries"
+    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
+    original="create_samples"
+    ignoreOriginal="True"
+    replacement=".analysisrequest.create_samples"
+    order="1012" />
+
+  <monkey:patch
+    description="Include division query in get_client_queries"
+    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
+    original="create_sample"
+    ignoreOriginal="True"
+    replacement=".analysisrequest.create_sample"
+    order="1012" />
+
+  <monkey:patch
+    description="Sets Client on Batch"
+    class="bika.lims.content.analysisrequest.AnalysisRequest"
+    original="getClient"
+    ignoreOriginal="True"
+    replacement=".analysisrequest.getClient"
+    order="1001" />
+
 </configure>

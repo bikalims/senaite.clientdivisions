@@ -50,13 +50,13 @@ class SamplesListingViewAdapter(object):
             for i in range(len(self.listing.review_states)):
                 self.listing.review_states[i]["columns"].append("Division")
 
-    def folder_item(self, obj, item, index):
+    def folder_item(self, brain, item, index):
         if not is_installed():
             return item
 
-        obj = api.get_object(obj)
-        division = obj.Schema()["Division"].getAccessor(obj)()
-        if division:
+        division_uid = brain.getDivisionUID
+        if division_uid:
+            division = api.get_object_by_uid(division_uid)
             division_title = division.Title()  # or DivisionID
             division_url = division.absolute_url()
             division_link = get_link(division_url, division_title)
