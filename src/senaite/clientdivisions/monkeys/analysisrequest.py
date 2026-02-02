@@ -100,7 +100,12 @@ def get_client_queries(self, obj, record=None):
         }
     }
 
-    if self.context.portal_type == "Division":
+    context = self.context
+    parent = context.aq_parent
+    if context.portal_type == "Division":
+        queries["Contact"] = {"getParentUID": record.get("Division")}
+        queries["CCContact"] = {"getParentUID": record.get("Division")}
+    elif context.portal_type == "Batch" and parent.portal_type == "Division":
         queries["Contact"] = {"getParentUID": record.get("Division")}
         queries["CCContact"] = {"getParentUID": record.get("Division")}
     # additional filtering by sample type
