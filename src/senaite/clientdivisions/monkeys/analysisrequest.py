@@ -170,7 +170,7 @@ def get_sampletype_queries(self, obj, record=None):
         for field in fields:
             queries[field]["getClientUID"] = [client_uid, ""]
 
-    division = record.get("Division") or self.get_division()
+    division = record.get("Division")
     division_uid = api.get_uid(division) if division else None
 
     if division_uid:
