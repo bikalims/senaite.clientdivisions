@@ -12,7 +12,15 @@
     order="1012" />
 
   <monkey:patch
-    description="Include division query in get_client_queries"
+    description="Include division query in get_sampletype_queries"
+    class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
+    original="get_sampletype_queries"
+    ignoreOriginal="True"
+    replacement=".analysisrequest.get_sampletype_queries"
+    order="1012" />
+
+  <monkey:patch
+    description="Include division query in get_default_contact"
     class="bika.lims.browser.analysisrequest.add2.ajaxAnalysisRequestAddView"
     original="get_default_contact"
     ignoreOriginal="True"

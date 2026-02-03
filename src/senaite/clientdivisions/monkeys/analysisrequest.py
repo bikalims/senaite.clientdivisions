@@ -105,15 +105,78 @@ def get_client_queries(self, obj, record=None):
     if context.portal_type == "Division":
         queries["Contact"] = {"getParentUID": record.get("Division")}
         queries["CCContact"] = {"getParentUID": record.get("Division")}
+        queries["SamplePoint"] = {"getClientUID": record.get("Division")}
+        queries["Profiles"] = {"getClientUID": record.get("Division")}
+        queries["Specification"] = {"getClientUID": record.get("Division")}
+        queries["Sample"] = {"getClientUID": record.get("Division")}
+        queries["Batch"] = {"getClientUID": record.get("Division")}
+        queries["PrimaryAnalysisRequest"] = {
+            "getClientUID": record.get("Division")}
     elif context.portal_type == "Batch" and parent.portal_type == "Division":
         queries["Contact"] = {"getParentUID": record.get("Division")}
         queries["CCContact"] = {"getParentUID": record.get("Division")}
+        queries["Contact"] = {"getParentUID": record.get("Division")}
+        queries["CCContact"] = {"getParentUID": record.get("Division")}
+        queries["SamplePoint"] = {"getClientUID": record.get("Division")}
+        queries["Profiles"] = {"getClientUID": record.get("Division")}
+        queries["Specification"] = {"getClientUID": record.get("Division")}
+        queries["Sample"] = {"getClientUID": record.get("Division")}
+        queries["Batch"] = {"getClientUID": record.get("Division")}
+        queries["PrimaryAnalysisRequest"] = {
+            "getClientUID": record.get("Division")}
     # additional filtering by sample type
     record = record if record else {}
     sample_type_uid = record.get("SampleType")
     if api.is_uid(sample_type_uid):
         st_queries = self.get_sampletype_queries(sample_type_uid, record)
         queries.update(st_queries)
+
+    return queries
+
+
+def get_sampletype_queries(self, obj, record=None):
+    """Returns the filter queries to apply to other fields based on both
+    the SampleType object and record
+    """
+    uid = api.get_uid(obj)
+    queries = {
+        # Display Sample Points that have this sample type assigned plus
+        # those that do not have a sample type assigned
+        "SamplePoint": {
+            "sampletype_uid": [uid, ""],
+        },
+        # Display Analysis Profiles that have this sample type assigned
+        # in addition to those that do not have a sample profile assigned
+        "Profiles": {
+            "sampletype_uid": [uid, ""],
+        },
+        # Display Specifications that have this sample type assigned only
+        "Specification": {
+            "sampletype_uid": uid,
+        },
+        # Display Sample Templates that have this sample type assigned plus
+        # those that do not have a sample type assigned
+        "Template": {
+            "sampletype_uid": [uid, ""],
+        }
+    }
+
+    # additional filters by client
+    record = record if record else {}
+    client = record.get("Client") or self.get_client()
+    client_uid = api.get_uid(client) if client else None
+    if client_uid:
+        fields = ["Template", "Specification", "Profiles", "SamplePoint"]
+        for field in fields:
+            queries[field]["getClientUID"] = [client_uid, ""]
+
+    division = record.get("Division") or self.get_division()
+    division_uid = api.get_uid(division) if division else None
+
+    if division_uid:
+        fields = ["Template", "Specification", "Profiles", "SamplePoint"]
+        for field in fields:
+            queries[field]["getClientUID"] = [division_uid, ""]
 
     return queries
 
