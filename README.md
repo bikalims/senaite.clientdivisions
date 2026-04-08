@@ -31,7 +31,7 @@ Add senaite.clientdivisions to your custom add-ons list in the Docker-based Ingw
 
 ### Manual
 
-[Client Diuvisions](https://www.bikalims.org/new-manual/clients-and-contacts/divisions)
+[Client Divisions](https://www.bikalims.org/new-manual/clients-and-contacts/divisions)
 
 ### License
 This project is licensed under the GNU General Public License v2.0 (GPL-2.0).
