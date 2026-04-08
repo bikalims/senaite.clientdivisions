@@ -1,35 +1,45 @@
 ## senaite.clientdivisions
 
-*To Come*
+### Overview
 
+`senaite.clientdivisions` extends **Senaite** (the modern core of Bika LIMS) with 
 
+The Bika Client functionality is cloned as Divisions that live inside their parent Clients. Divisions have full Client functionality, with their own Contacts, Batches, Samples etc. See [Client Divisions](https://www.bikalims.org/new-manual/clients-and-contacts/divisions) in the manual
 
+### Requirements
 
-
-
-### Features
-
-- Can be bullet points
-
-
-### Documentation
-
-Full documentation for end users can be found in the "docs" folder, and is also available online at http://docs.plone.org/foo/bar
+- **Senaite** (recommended latest version) or **Ingwe Bika LIMS 4**
 
 ### Installation
 
-Install senaite.clientdivisions by adding it to your buildout::
+#### Using Buildout (Classic Plone/Senaite)
 
+Add the following to your `buildout.cfg`:
 
+cfg
+[buildout]
+eggs =
+    ...
+    senaite.clientdivisions
 
+Then run:
+Bashbin/buildout
 
-### Support
+#### Docker (Recommended for Ingwe Bika LIMS 4)
 
-If you are having issues, please let us know.
+Add senaite.clientdivisions to your custom add-ons list in the Docker-based Ingwe Bika distribution.
 
+### Manual
 
+[Client Diuvisions](https://www.bikalims.org/new-manual/clients-and-contacts/divisions)
 
-License
--------
+### License
+This project is licensed under the GNU General Public License v2.0 (GPL-2.0).
 
-The project is licensed under the GPLv2.
+### Support & Professional Services
+[Bika Lab Systems](www.bikalabs.com) offers professional implementation, training, custom development, and support for senaite.clientdivisions.
+
+Website: [https://www.bikalims.org](https://www.bikalims.org)
+Email: info@bikalims.org (or contact Lemoene directly)
+
+Made with ❤️ in Cape Town, South Africa
